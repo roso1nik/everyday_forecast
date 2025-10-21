@@ -18,7 +18,7 @@ export default function AuthPage() {
                     distortion={0.05}
                 />
             </div>
-            <div className="border-primary/50 bg-background/30 m-auto mt-20 flex w-1/4 flex-col items-center rounded-lg border p-4 backdrop-blur">
+            <div className="border-primary/50 bg-background/30 m-auto mt-20 flex w-3/4 flex-col items-center rounded-lg border p-4 backdrop-blur lg:w-1/4">
                 <p className="text-xl font-black">Авторизация</p>
                 <div className="mt-4 flex w-full flex-col gap-1">
                     <Input placeholder="Логин" />
