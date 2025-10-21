@@ -10,5 +10,5 @@ export default function Home() {
 
     if (!isAuth) return push(ROUTES.AUTH_PAGE)
 
-    return <div className="flex h-screen w-full flex-row items-center justify-center">HOME PAGE</div>
+    return <div className="flex w-full flex-row items-center justify-center">HOME PAGE</div>
 }
