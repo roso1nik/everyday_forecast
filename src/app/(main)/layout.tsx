@@ -10,7 +10,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
             </div>
             <div className="mx-auto w-3/4 py-4">
                 <Header />
-                {children}
+                <main className="my-4">{children}</main>
             </div>
         </>
     )
