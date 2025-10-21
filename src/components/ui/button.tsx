@@ -39,19 +39,24 @@ function Button({
     variant,
     size,
     asChild = false,
+    loading,
     ...props
 }: React.ComponentProps<'button'> &
     VariantProps<typeof buttonVariants> & {
         asChild?: boolean
+        loading?: boolean
     }) {
     const Comp = asChild ? Slot : 'button'
 
     return (
-        <Comp
-            data-slot="button"
-            className={cn(buttonVariants({ variant, size, className }), 'cursor-pointer')}
-            {...props}
-        />
+        <>
+            <Comp
+                data-slot="button"
+                className={cn(buttonVariants({ variant, size, className }), 'cursor-pointer')}
+                {...props}
+            />
+            {loading && <p>Загрузка...</p>}
+        </>
     )
 }
 

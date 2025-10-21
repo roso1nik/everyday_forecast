@@ -10,11 +10,11 @@ import { useCallback, useState } from 'react'
 export default function AuthPage() {
     const [form, setForm] = useState({ login: '', password: '' })
 
-    const { mutate } = useLogin()
+    const { mutate, isPending } = useLogin()
 
     const handleLogin = useCallback(() => {
         if (form.login.trim().length !== 0 && form.password.trim().length !== 0) {
-            mutate({ login: form.login, password: form.password })
+            mutate({ username: form.login, password: form.password })
         }
     }, [form.login, form.password, mutate])
 
@@ -49,7 +49,7 @@ export default function AuthPage() {
                         onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
                         className="cursor-target"
                     />
-                    <Button onClick={handleLogin} className="cursor-target mt-4">
+                    <Button onClick={handleLogin} className="cursor-target mt-4" loading={isPending}>
                         Войти
                     </Button>
                 </div>

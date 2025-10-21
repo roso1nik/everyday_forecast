@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { GLOBAL_DICTIONARY } from '../config'
+import { refreshTokens } from '@/entities/auth/api/use-refresh'
 
 const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BACKEND_URL
@@ -38,32 +39,23 @@ apiClient.interceptors.response.use(
                 originalRequest._retry = true
                 refreshTokenAttempts += 1
 
-                // try {
-                //     const refreshToken = Cookies.get(GLOBAL_DICTIONARY.REFRESH_TOKEN)
-                //     if (!refreshToken) {
-                //         return Promise.reject(error)
-                //     }
+                try {
+                    const refreshToken = Cookies.get(GLOBAL_DICTIONARY.REFRESH_TOKEN)
+                    if (!refreshToken) {
+                        return Promise.reject(error)
+                    }
 
-                //     const response = await authApi.refreshTokens(refreshToken)
+                    const { accessToken } = (await refreshTokens({ refreshToken })).data
 
-                //     refreshTokenAttempts = 0
+                    refreshTokenAttempts = 0
 
-                //     const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response
+                    apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+                    originalRequest.headers['Authorization'] = `Bearer ${accessToken}`
 
-                //     Cookies.set(GLOBAL_DICTIONARY.ACCESS_TOKEN, newAccessToken, {
-                //         expires: AUTH_CONGIG.ACCESS_TOKEN_LIFETIME
-                //     })
-                //     Cookies.set(GLOBAL_DICTIONARY.REFRESH_TOKEN, newRefreshToken, {
-                //         expires: AUTH_CONGIG.REFRESH_TOKEN_LIFETIME
-                //     })
-
-                //     apiClient.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`
-                //     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
-
-                //     return apiClient(originalRequest)
-                // } catch (refreshError) {
-                //     return Promise.reject(refreshError)
-                // }
+                    return apiClient(originalRequest)
+                } catch (refreshError) {
+                    return Promise.reject(refreshError)
+                }
             }
         }
 

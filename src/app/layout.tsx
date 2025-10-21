@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import '@/shared/styles/index.css'
 import { QueryProvider } from '@/shared/providers/query-client'
 import TargetCursor from '@/components/TargetCursor'
+import { Toaster } from 'react-hot-toast'
 
 const font_flobal = Inter({
     variable: '--font',
@@ -24,6 +25,7 @@ export default function RootLayout({
             <body className={`${font_flobal.variable} antialiased`}>
                 <QueryProvider>{children}</QueryProvider>
                 <TargetCursor spinDuration={7} hideDefaultCursor={true} />
+                <Toaster />
                 <p className="my-4 w-full text-center text-sm italic">
                     created by{' '}
                     <a href="https://github.com/roso1nik" className="cursor-target underline">

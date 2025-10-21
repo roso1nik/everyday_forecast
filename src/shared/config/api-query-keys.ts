@@ -1,3 +1,5 @@
 export const ApiQueryKeys = {
-    LOGIN: 'login'
+    LOGIN: 'login',
+    LOGOUT: 'logout',
+    REFRESH: 'refresh'
 } as const

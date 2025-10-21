@@ -1,31 +1,32 @@
 import apiClient from '@/shared/api'
 import { ApiQueryKeys } from '@/shared/config'
 import { ROUTES } from '@/shared/router'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
-interface LoginRequest {
-    username: string
-    password: string
+interface LogoutRequest {
+    refreshToken: string
 }
 
-const login = async (data: LoginRequest) => {
-    const res = await apiClient.post('/auth/login', data, { withCredentials: true })
+const logout = async (data: LogoutRequest) => {
+    const res = await apiClient.post('/auth/logout', data, { withCredentials: true })
 
     return res
 }
 
-export const useLogin = () => {
+export const useLogout = () => {
     const { push } = useRouter()
+    const queryClient = useQueryClient()
 
     return useMutation({
-        mutationKey: [ApiQueryKeys.LOGIN],
-        mutationFn: login,
+        mutationKey: [ApiQueryKeys.LOGOUT],
+        mutationFn: logout,
         onSuccess: () => {
-            toast.success('Успешный вход')
-            push(ROUTES.HOME_PAGE)
+            queryClient.clear()
+            toast.success('Вы вышли из аккаунта')
+            push(ROUTES.AUTH_PAGE)
         },
         onError: (error: AxiosError<{ message?: string }>) => {
             const errorMessage = error.response?.data?.message || error.message || 'Неизвестная ошибка!'
