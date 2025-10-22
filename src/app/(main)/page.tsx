@@ -3,11 +3,15 @@
 import { ROUTES } from '@/shared/router'
 import { useRouter } from 'next/navigation'
 import SplitText from '@/components/SplitText'
+import { useIsAuth } from '@/entities/auth/hooks/use-is-auth'
+import { Loader } from '@/components/loader'
 
 export default function Home() {
     const { push } = useRouter()
 
-    const isAuth = true
+    const { isAuth, isLoading } = useIsAuth()
+
+    if (isLoading) return <Loader />
 
     if (!isAuth) return push(ROUTES.AUTH_PAGE)
 

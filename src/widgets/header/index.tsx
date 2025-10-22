@@ -8,9 +8,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 import { GLOBAL_DICTIONARY } from '@/shared/config'
+import { useIsAuth } from '@/entities/auth/hooks/use-is-auth'
+import { useSelf } from '@/entities/user/api/use-self'
 
 export const Header = () => {
     const { push } = useRouter()
+
+    const isAuth = useIsAuth()
+    const { data: user } = useSelf()
 
     const refreshToken = Cookies.get(GLOBAL_DICTIONARY.REFRESH_TOKEN)
     const { mutate: logout, isPending: isLoadingLogout } = useLogout()
@@ -22,20 +27,21 @@ export const Header = () => {
                     <p className="cursor-target italic hover:underline">everyday_forecast</p>
                 </Link>
             </div>
-            <div className="flex flex-row gap-1">
+            <div className="flex flex-row items-center gap-3">
+                {isAuth && user?.data.username}
                 <Button
-                    variant="ghost"
+                    variant={isAuth ? 'destructive' : 'ghost'}
                     className="cursor-target"
                     onClick={() => {
-                        if (refreshToken) {
-                            logout({ refreshToken: refreshToken })
+                        if (isAuth) {
+                            logout({ refreshToken: refreshToken || '' })
                         } else {
                             push(ROUTES.AUTH_PAGE)
                         }
                     }}
                     loading={isLoadingLogout}
                 >
-                    {refreshToken ? 'Выйти' : 'Логин'}
+                    {isAuth ? 'Выйти' : 'Логин'}
                 </Button>
             </div>
         </div>
