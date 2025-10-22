@@ -21,7 +21,7 @@ export const Header = () => {
     const { mutate: logout, isPending: isLoadingLogout } = useLogout()
 
     return (
-        <div className="border-primary/50 bg-background/50 flex w-full flex-row items-center justify-between rounded-full border p-4 backdrop-blur">
+        <div className="border-primary/50 bg-background/50 flex w-full flex-col items-center justify-between gap-1 rounded-full border p-4 backdrop-blur lg:flex-row">
             <div>
                 <Link href={ROUTES.HOME_PAGE}>
                     <p className="cursor-target italic hover:underline">everyday_forecast</p>

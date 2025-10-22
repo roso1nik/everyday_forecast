@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import SplitText from '@/components/SplitText'
 import { useIsAuth } from '@/entities/auth/hooks/use-is-auth'
 import { Loader } from '@/components/loader'
+import { AvailableTickers } from '@/features/tickers'
+import { ResultsTickersList } from '@/features/result-tickers'
 
 export default function Home() {
     const { push } = useRouter()
@@ -16,7 +18,7 @@ export default function Home() {
     if (!isAuth) return push(ROUTES.AUTH_PAGE)
 
     return (
-        <div className="flex w-full flex-row items-center justify-center">
+        <div className="flex w-full flex-col gap-5">
             <SplitText
                 text="Стал ли ты сегодня миллионером или снова нет?"
                 className="text-center text-2xl font-semibold"
@@ -30,6 +32,14 @@ export default function Home() {
                 rootMargin="-100px"
                 textAlign="center"
             />
+            <div className="flex flex-col gap-1">
+                <h2 className="text-lg font-bold">Последние запросы:</h2>
+                <ResultsTickersList />
+            </div>
+            <div className="flex flex-col gap-1">
+                <h2 className="text-lg font-bold">Доступные тикеры:</h2>
+                <AvailableTickers />
+            </div>
         </div>
     )
 }
