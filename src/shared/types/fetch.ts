@@ -8,7 +8,7 @@ export type SortFields<T> = {
     [K in keyof T]?: SortOptions
 }
 
-export interface RequestData<T, S = SortFields<T>, F = RecursivePartial<T>> {
+export interface RequestData<T, F = RecursivePartial<T>, S = SortFields<T>> {
     pagination: Pagination
     filters: Partial<F>
     sorts?: RecursivePartial<S | T>

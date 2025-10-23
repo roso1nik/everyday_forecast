@@ -40,12 +40,9 @@ apiClient.interceptors.response.use(
                 refreshTokenAttempts += 1
 
                 try {
-                    const refreshToken = Cookies.get(GLOBAL_DICTIONARY.REFRESH_TOKEN)
-                    if (!refreshToken) {
-                        return Promise.reject(error)
-                    }
+                    const { accessToken } = (await refreshTokens()).data
 
-                    const { accessToken } = (await refreshTokens({ refreshToken })).data
+                    Cookies.set(GLOBAL_DICTIONARY.ACCESS_TOKEN, accessToken)
 
                     refreshTokenAttempts = 0
 
