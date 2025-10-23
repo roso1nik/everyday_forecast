@@ -1,6 +1,6 @@
 import { User } from '@/entities/user/model/user'
 import apiClient from '@/shared/api'
-import { ApiQueryKeys, GLOBAL_DICTIONARY } from '@/shared/config'
+import { ApiQueryKeys, AUTH_CONGIG, GLOBAL_DICTIONARY } from '@/shared/config'
 import { ROUTES } from '@/shared/router'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosPromise } from 'axios'
@@ -35,7 +35,10 @@ export const useLogin = () => {
             push(ROUTES.HOME_PAGE)
 
             if (response.data.accessToken) {
-                Cookies.set(GLOBAL_DICTIONARY.ACCESS_TOKEN, response.data.accessToken, { secure: true })
+                Cookies.set(GLOBAL_DICTIONARY.ACCESS_TOKEN, response.data.accessToken, {
+                    secure: true,
+                    expires: AUTH_CONGIG.ACCESS_TOKEN_LIFETIME
+                })
             }
         },
         onError: (error: AxiosError<{ message?: string }>) => {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import { GLOBAL_DICTIONARY } from '../config'
+import { AUTH_CONGIG, GLOBAL_DICTIONARY } from '../config'
 import { refreshTokens } from '@/entities/auth/api/use-refresh'
 
 const apiClient = axios.create({
@@ -42,7 +42,9 @@ apiClient.interceptors.response.use(
                 try {
                     const { accessToken } = (await refreshTokens()).data
 
-                    Cookies.set(GLOBAL_DICTIONARY.ACCESS_TOKEN, accessToken)
+                    Cookies.set(GLOBAL_DICTIONARY.ACCESS_TOKEN, accessToken, {
+                        expires: AUTH_CONGIG.ACCESS_TOKEN_LIFETIME
+                    })
 
                     refreshTokenAttempts = 0
 
