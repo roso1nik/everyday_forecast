@@ -16,6 +16,8 @@ import { PLACEHOLDER_QUERY, SortOptions } from '@/shared/types'
 import { cn } from '@/shared/utils'
 import { Check, ChevronDownIcon, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
+import dayjs from 'dayjs'
+import { DATE_TIME_DEFAULT_FORMAT } from '@/shared/config'
 
 const PAGINATION_COUNT = 8
 
@@ -24,7 +26,7 @@ export const ResultsTickersList = () => {
 
     const [isClosed, setIsClosed] = useState<SortOptions>(undefined)
     const [open, setOpen] = useState(false)
-    const [valueTicker, setValueTicker] = useState('1')
+    const [valueTicker, setValueTicker] = useState('')
 
     const [openDate, setOpenDate] = useState(false)
     const [dateMin, setDateMin] = useState<Date | undefined>(undefined)
@@ -43,7 +45,7 @@ export const ResultsTickersList = () => {
                 min: dateMin?.toISOString() || undefined,
                 max: dateMax?.toISOString() || undefined
             },
-            tickersIds: [Number(valueTicker)]
+            tickersIds: valueTicker ? [Number(valueTicker)] : undefined
         },
         sorts: {
             isClosed: isClosed
@@ -227,15 +229,18 @@ export const ResultsTickersList = () => {
                         </div>
                     </div>
                 </div>
-                <Select value={isClosed as any} onValueChange={(e) => setIsClosed(e as SortOptions)}>
-                    <SelectTrigger className="w-[220px]">
-                        <SelectValue placeholder="Сортировка завершения" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value={'ASC'}>По возрастанию</SelectItem>
-                        <SelectItem value="DESC">По убыванию</SelectItem>
-                    </SelectContent>
-                </Select>
+                <div className="flex flex-col gap-3">
+                    <Label className="px-1">Сорт. закрытия</Label>
+                    <Select value={isClosed as any} onValueChange={(e) => setIsClosed(e as SortOptions)} i>
+                        <SelectTrigger className="w-[220px]">
+                            <SelectValue placeholder="Сортировка завершения" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value={'ASC'}>По возрастанию</SelectItem>
+                            <SelectItem value="DESC">По убыванию</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
             <div className="overflow-x-auto rounded-lg border border-gray-800/50">
                 <table className="w-full min-w-full divide-y divide-gray-800/50">
@@ -295,14 +300,17 @@ export const ResultsTickersList = () => {
                                 ${gradient.accent}15 100%)`
                                     }}
                                 >
-                                    {/* Тикер */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="flex items-center gap-2">
                                             <span className="font-bold text-white">{el.ticker.name}</span>
                                         </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-muted-foreground text-sm">
+                                                {dayjs(el.createdAt).format(DATE_TIME_DEFAULT_FORMAT)}
+                                            </span>
+                                        </div>
                                     </td>
 
-                                    {/* Направление */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="flex items-center gap-2">
                                             <span
@@ -327,7 +335,6 @@ export const ResultsTickersList = () => {
                                         </div>
                                     </td>
 
-                                    {/* Таймфрейм */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <span
                                             className={cn(
@@ -343,7 +350,6 @@ export const ResultsTickersList = () => {
                                         </span>
                                     </td>
 
-                                    {/* Текущая цена */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
                                             <p className="text-muted-foreground text-xs">Текущая</p>
@@ -351,7 +357,6 @@ export const ResultsTickersList = () => {
                                         </div>
                                     </td>
 
-                                    {/* Прогноз */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
                                             <p className="text-muted-foreground text-xs">Прогноз</p>
@@ -360,16 +365,12 @@ export const ResultsTickersList = () => {
                                             </p>
                                         </div>
                                     </td>
-
-                                    {/* Реальная цена */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
                                             <p className="text-muted-foreground text-xs">Реальная</p>
                                             <p className="font-medium text-purple-300">{formatPrice(el.realPrice)}</p>
                                         </div>
                                     </td>
-
-                                    {/* Разница */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
                                             <p className="text-muted-foreground text-xs">Разница</p>
@@ -387,8 +388,6 @@ export const ResultsTickersList = () => {
                                             </p>
                                         </div>
                                     </td>
-
-                                    {/* Плечо */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
                                             <p className="text-muted-foreground text-xs">Плечо</p>
@@ -397,8 +396,6 @@ export const ResultsTickersList = () => {
                                             </p>
                                         </div>
                                     </td>
-
-                                    {/* Статус */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
                                             <p className="text-muted-foreground text-xs">Статус</p>
@@ -412,8 +409,6 @@ export const ResultsTickersList = () => {
                                             </p>
                                         </div>
                                     </td>
-
-                                    {/* SL/TP */}
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="flex flex-col gap-1 text-xs">
                                             {el.stopLoss && (
