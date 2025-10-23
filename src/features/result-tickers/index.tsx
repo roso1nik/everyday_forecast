@@ -231,7 +231,7 @@ export const ResultsTickersList = () => {
                 </div>
                 <div className="flex flex-col gap-3">
                     <Label className="px-1">Сорт. закрытия</Label>
-                    <Select value={isClosed as any} onValueChange={(e) => setIsClosed(e as SortOptions)} i>
+                    <Select value={isClosed as any} onValueChange={(e) => setIsClosed(e as SortOptions)}>
                         <SelectTrigger className="w-[220px]">
                             <SelectValue placeholder="Сортировка завершения" />
                         </SelectTrigger>
