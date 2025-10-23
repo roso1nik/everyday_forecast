@@ -11,10 +11,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useResultsTickers } from '@/entities/ticker-results/api/use-get-processed-tickers'
 import { useAvailableTickers } from '@/entities/ticker-results/api/use-get-tickers'
-import { TickerDirection, TickerTimeFrame } from '@/entities/ticker-results/model/ticker'
+import { TickerDirection, TickerModels, TickerTimeFrame } from '@/entities/ticker-results/model/ticker'
 import { PLACEHOLDER_QUERY, SortOptions } from '@/shared/types'
 import { cn } from '@/shared/utils'
-import { Check, ChevronDownIcon, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronDownIcon, ChevronsUpDown, SortAsc, SortDesc, Trash } from 'lucide-react'
 import { useState } from 'react'
 import dayjs from 'dayjs'
 import { DATE_TIME_DEFAULT_FORMAT } from '@/shared/config'
@@ -24,7 +24,7 @@ const PAGINATION_COUNT = 8
 export const ResultsTickersList = () => {
     const [page, setPage] = useState(1)
 
-    const [isClosed, setIsClosed] = useState<SortOptions>(undefined)
+    const [isClosed, setIsClosed] = useState<string | undefined>(undefined)
     const [open, setOpen] = useState(false)
     const [valueTicker, setValueTicker] = useState('')
 
@@ -32,6 +32,10 @@ export const ResultsTickersList = () => {
     const [dateMin, setDateMin] = useState<Date | undefined>(undefined)
     const [openDateMax, setOpenDateMax] = useState(false)
     const [dateMax, setDateMax] = useState<Date | undefined>(undefined)
+
+    const [model, setModel] = useState<TickerModels | undefined>(undefined)
+
+    const [sortCreated, setSortCreated] = useState<SortOptions | undefined>(undefined)
 
     const {
         data: resultsTicker,
@@ -45,10 +49,12 @@ export const ResultsTickersList = () => {
                 min: dateMin?.toISOString() || undefined,
                 max: dateMax?.toISOString() || undefined
             },
-            tickersIds: valueTicker ? [Number(valueTicker)] : undefined
+            tickersIds: valueTicker ? [Number(valueTicker)] : undefined,
+            model: model,
+            isClosed: isClosed === undefined ? undefined : Boolean(isClosed)
         },
         sorts: {
-            isClosed: isClosed
+            createdAt: sortCreated ? sortCreated : undefined
         }
     })
 
@@ -228,18 +234,51 @@ export const ResultsTickersList = () => {
                             </Popover>
                         </div>
                     </div>
+                    <div className="flex flex-col gap-3">
+                        <Label className="px-1">Модель</Label>
+                        <Select value={model} onValueChange={(e) => setModel(e as TickerModels)}>
+                            <SelectTrigger className="w-[220px]">
+                                <SelectValue placeholder="Модель" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={TickerModels.DEEPSEEKR1T}>DEEPSEEKR1T</SelectItem>
+                                <SelectItem value={TickerModels.GPT5}>GPT5</SelectItem>
+                                <SelectItem value={TickerModels.QWEN3}>QWEN3</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {model && (
+                            <Button variant={'outline'} onClick={() => setModel(undefined)}>
+                                Сбросить
+                            </Button>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <Label className="px-1">Закрыто</Label>
+                        <Select value={isClosed} onValueChange={(e) => setIsClosed(e)}>
+                            <SelectTrigger className="w-[150px]">
+                                <SelectValue placeholder="Сортировка завершения" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={'1'}>Да</SelectItem>
+                                <SelectItem value={'0'}>Нет</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {isClosed && (
+                            <Button variant={'outline'} onClick={() => setIsClosed(undefined)}>
+                                Сбросить
+                            </Button>
+                        )}
+                    </div>
                 </div>
-                <div className="flex flex-col gap-3">
-                    <Label className="px-1">Сорт. закрытия</Label>
-                    <Select value={isClosed as any} onValueChange={(e) => setIsClosed(e as SortOptions)}>
-                        <SelectTrigger className="w-[220px]">
-                            <SelectValue placeholder="Сортировка завершения" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value={'ASC'}>По возрастанию</SelectItem>
-                            <SelectItem value="DESC">По убыванию</SelectItem>
-                        </SelectContent>
-                    </Select>
+                <div className="flex flex-row gap-1">
+                    <Button onClick={() => setSortCreated((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}>
+                        {sortCreated === 'ASC' ? <SortDesc /> : <SortAsc />}
+                    </Button>
+                    {sortCreated !== undefined && (
+                        <Button variant={'destructive'} onClick={() => setSortCreated(undefined)}>
+                            <Trash />
+                        </Button>
+                    )}
                 </div>
             </div>
             <div className="overflow-x-auto rounded-lg border border-gray-800/50">
@@ -301,6 +340,9 @@ export const ResultsTickersList = () => {
                                     }}
                                 >
                                     <td className="whitespace-nowrap px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-muted-foreground text-sm">{el.model}</span>
+                                        </div>
                                         <div className="flex items-center gap-2">
                                             <span className="font-bold text-white">{el.ticker.name}</span>
                                         </div>

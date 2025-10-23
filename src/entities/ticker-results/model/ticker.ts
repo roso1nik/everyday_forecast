@@ -22,6 +22,7 @@ export interface ResultTicker {
     closedAt: number | null
     createdAt: string
     ticker: Omit<Ticker, 'processCount'>
+    model: TickerModels
 }
 
 export enum TickerDirection {
@@ -33,4 +34,10 @@ export enum TickerDirection {
 export enum TickerTimeFrame {
     OneDay = 'OneDay',
     OneWeek = 'OneWeek '
+}
+
+export enum TickerModels {
+    GPT5 = 'Gpt5',
+    DEEPSEEKR1T = 'DeepseekR1T',
+    QWEN3 = 'Qwen3'
 }

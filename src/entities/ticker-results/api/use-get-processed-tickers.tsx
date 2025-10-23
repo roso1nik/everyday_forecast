@@ -1,7 +1,7 @@
 import apiClient from '@/shared/api'
 import { ApiQueryKeys } from '@/shared/config'
 import { RequestData, ResponseData } from '@/shared/types'
-import { ResultTicker } from '../model/ticker'
+import { ResultTicker, TickerModels } from '../model/ticker'
 import { useQuery } from '@tanstack/react-query'
 
 interface ResultsTickersFilters {
@@ -9,7 +9,9 @@ interface ResultsTickersFilters {
         min?: string
         max?: string
     }
-    tickersIds: number[]
+    tickersIds?: number[]
+    model?: TickerModels
+    isClosed?: boolean
 }
 
 const resultsTickers = async (data: RequestData<ResultTicker, ResultsTickersFilters>): ResponseData<ResultTicker[]> => {
