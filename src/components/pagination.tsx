@@ -50,7 +50,7 @@ export const Pagination: FC<PaginationProps> = ({
                     variant={page === 1 ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handlePageChange(1)}
-                    className="h-10 w-10"
+                    className="cursor-target h-10 w-10"
                 >
                     1
                 </Button>
@@ -58,7 +58,7 @@ export const Pagination: FC<PaginationProps> = ({
 
             if (startPage > 2) {
                 pages.push(
-                    <Button key="ellipsis-start" variant="ghost" size="sm" disabled className="h-10 w-10">
+                    <Button key="ellipsis-start" variant="ghost" size="sm" disabled className="cursor-target h-10 w-10">
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 )
@@ -73,7 +73,7 @@ export const Pagination: FC<PaginationProps> = ({
                     variant={page === i ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handlePageChange(i)}
-                    className="h-10 w-10"
+                    className="cursor-target h-10 w-10"
                 >
                     {i}
                 </Button>
@@ -84,7 +84,7 @@ export const Pagination: FC<PaginationProps> = ({
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
                 pages.push(
-                    <Button key="ellipsis-end" variant="ghost" size="sm" disabled className="h-10 w-10">
+                    <Button key="ellipsis-end" variant="ghost" size="sm" disabled className="cursor-target h-10 w-10">
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 )
@@ -96,7 +96,7 @@ export const Pagination: FC<PaginationProps> = ({
                     variant={page === totalPages ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => handlePageChange(totalPages)}
-                    className="h-10 w-10"
+                    className="cursor-target h-10 w-10"
                 >
                     {totalPages}
                 </Button>
@@ -134,7 +134,7 @@ export const Pagination: FC<PaginationProps> = ({
                         size="sm"
                         onClick={() => handlePageChange(page - 1)}
                         disabled={page === 1}
-                        className="h-10 w-10"
+                        className="cursor-target h-10 w-10"
                     >
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
@@ -144,7 +144,7 @@ export const Pagination: FC<PaginationProps> = ({
                         size="sm"
                         onClick={() => handlePageChange(page + 1)}
                         disabled={page === totalPages || totalPages === 0}
-                        className="h-10 w-10"
+                        className="cursor-target h-10 w-10"
                     >
                         <ChevronRight className="h-4 w-4" />
                     </Button>

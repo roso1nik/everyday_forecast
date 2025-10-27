@@ -5,6 +5,10 @@ import { ResultTicker, TickerModels } from '../model/ticker'
 import { useQuery } from '@tanstack/react-query'
 
 interface ResultsTickersFilters {
+    createdAt?: {
+        min?: string
+        max?: string
+    }
     closedAt?: {
         min?: string
         max?: string

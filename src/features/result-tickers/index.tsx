@@ -33,6 +33,11 @@ export const ResultsTickersList = () => {
     const [openDateMax, setOpenDateMax] = useState(false)
     const [dateMax, setDateMax] = useState<Date | undefined>(undefined)
 
+    const [openCreatedDateMin, setOpenCreatedDateMin] = useState(false)
+    const [createdDateMin, setCreatedDateMin] = useState<Date | undefined>(undefined)
+    const [openCreatedDateMax, setOpenCreatedDateMax] = useState(false)
+    const [createdDateMax, setCreatedDateMax] = useState<Date | undefined>(undefined)
+
     const [model, setModel] = useState<TickerModels | undefined>(undefined)
 
     const [sortCreated, setSortCreated] = useState<SortOptions | undefined>(undefined)
@@ -45,9 +50,13 @@ export const ResultsTickersList = () => {
         ...PLACEHOLDER_QUERY,
         pagination: { count: count, page: page },
         filters: {
+            createdAt: {
+                min: createdDateMin ? dayjs(createdDateMin)?.startOf('day')?.toISOString() : undefined,
+                max: createdDateMax ? dayjs(createdDateMax)?.endOf('day')?.toISOString() : undefined
+            },
             closedAt: {
-                min: dayjs(dateMin)?.startOf('day')?.toISOString() || undefined,
-                max: dayjs(dateMax)?.endOf('day')?.toISOString() || undefined
+                min: dateMin ? dayjs(dateMin)?.startOf('day')?.toISOString() : undefined,
+                max: dateMax ? dayjs(dateMax)?.endOf('day')?.toISOString() : undefined
             },
             tickersIds: valueTicker ? [Number(valueTicker)] : undefined,
             model: model,
@@ -144,6 +153,70 @@ export const ResultsTickersList = () => {
                             </PopoverContent>
                         </Popover>
                     </div>
+
+                    {/* Фильтр по дате создания - минимум */}
+                    <div className="flex flex-col gap-3">
+                        <Label htmlFor="created-date-min-picker" className="px-1">
+                            Начало создания
+                        </Label>
+                        <div className="flex flex-row gap-1">
+                            <Popover open={openCreatedDateMin} onOpenChange={setOpenCreatedDateMin}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        id="created-date-min-picker"
+                                        className="w-32 justify-between font-normal"
+                                    >
+                                        {createdDateMin ? createdDateMin.toLocaleDateString() : 'Дата'}
+                                        <ChevronDownIcon />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={createdDateMin}
+                                        captionLayout="dropdown"
+                                        onSelect={(date) => {
+                                            setCreatedDateMin(date)
+                                            setOpenCreatedDateMin(false)
+                                        }}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    </div>
+
+                    {/* Фильтр по дате создания - максимум */}
+                    <div className="flex flex-col gap-3">
+                        <Label htmlFor="created-date-max-picker" className="px-1">
+                            Конец создания
+                        </Label>
+                        <div className="flex flex-row gap-1">
+                            <Popover open={openCreatedDateMax} onOpenChange={setOpenCreatedDateMax}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        id="created-date-max-picker"
+                                        className="w-32 justify-between font-normal"
+                                    >
+                                        {createdDateMax ? createdDateMax.toLocaleDateString() : 'Дата'}
+                                        <ChevronDownIcon />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={createdDateMax}
+                                        captionLayout="dropdown"
+                                        onSelect={(date) => {
+                                            setCreatedDateMax(date)
+                                            setOpenCreatedDateMax(false)
+                                        }}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    </div>
                     <div className="flex flex-col gap-3">
                         <Label htmlFor="date-picker" className="px-1">
                             Начало закрытия
@@ -167,7 +240,7 @@ export const ResultsTickersList = () => {
                                         captionLayout="dropdown"
                                         onSelect={(date) => {
                                             setDateMin(date)
-                                            setOpen(false)
+                                            setOpenDate(false)
                                         }}
                                     />
                                 </PopoverContent>
