@@ -475,7 +475,7 @@ export const ResultsTickersList = () => {
                                     key={el.id}
                                     className={cn(
                                         'bg-linear-to-r cursor-target group from-transparent via-gray-800/5 to-transparent transition-all duration-300 hover:from-gray-800/10 hover:via-gray-800/20 hover:to-gray-800/10',
-                                        el.isPredictAchieved
+                                        el.difference && el.difference > 0
                                             ? 'from-green-500/5 via-green-500/10 to-green-500/5 hover:from-green-500/10 hover:via-green-500/20 hover:to-green-500/10'
                                             : 'from-red-500/5 via-red-500/10 to-red-500/5 hover:from-red-500/10 hover:via-red-500/20 hover:to-red-500/10'
                                     )}
@@ -507,6 +507,13 @@ export const ResultsTickersList = () => {
                                                 {dayjs(el.createdAt).format(DATE_TIME_DEFAULT_FORMAT)}
                                             </span>
                                         </div>
+                                        {!el.isPredictAchieved && (
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-muted-foreground text-sm">
+                                                    Цена не дошла то точки
+                                                </span>
+                                            </div>
+                                        )}
                                     </td>
 
                                     <td className="whitespace-nowrap px-6 py-4">
@@ -619,9 +626,6 @@ export const ResultsTickersList = () => {
                 />
                 {isPending && <p>Загрузка...</p>}
             </div>
-            <p className="text-muted-foreground px-2 text-sm">
-                * Красным отображаются ряда, которые так и не закрылись
-            </p>
             <p className="text-muted-foreground px-2 text-sm">
                 * SL/TP/Плечо не влияет на рассчеты, носит чисто информативный характер от ИИ
             </p>
