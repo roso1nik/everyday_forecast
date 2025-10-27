@@ -622,7 +622,10 @@ export const ResultsTickersList = () => {
                     page={page}
                     count={count}
                     handlePageChange={(e) => setPage(e)}
-                    handleItemsPerPageChange={(e) => setCount(Number(e))}
+                    handleItemsPerPageChange={(e) => {
+                        setPage(1)
+                        setCount(Number(e))
+                    }}
                 />
                 {isPending && <p>Загрузка...</p>}
             </div>
