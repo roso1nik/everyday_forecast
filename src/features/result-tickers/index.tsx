@@ -18,11 +18,11 @@ import { Check, ChevronDownIcon, ChevronsUpDown, SortAsc, SortDesc, Trash } from
 import { useState } from 'react'
 import dayjs from 'dayjs'
 import { DATE_TIME_DEFAULT_FORMAT } from '@/shared/config'
-
-const PAGINATION_COUNT = 8
+import { Pagination } from '@/components/pagination'
 
 export const ResultsTickersList = () => {
     const [page, setPage] = useState(1)
+    const [count, setCount] = useState(10)
 
     const [isClosed, setIsClosed] = useState<string | undefined>(undefined)
     const [open, setOpen] = useState(false)
@@ -43,11 +43,11 @@ export const ResultsTickersList = () => {
         isPending
     } = useResultsTickers({
         ...PLACEHOLDER_QUERY,
-        pagination: { count: PAGINATION_COUNT, page: page },
+        pagination: { count: count, page: page },
         filters: {
             closedAt: {
-                min: dateMin?.toISOString() || undefined,
-                max: dateMax?.toISOString() || undefined
+                min: dayjs(dateMin)?.startOf('day')?.toISOString() || undefined,
+                max: dayjs(dateMax)?.endOf('day')?.toISOString() || undefined
             },
             tickersIds: valueTicker ? [Number(valueTicker)] : undefined,
             model: model,
@@ -60,32 +60,7 @@ export const ResultsTickersList = () => {
 
     const { data: tickers } = useAvailableTickers()
 
-    const countTickers = Math.round((resultsTicker?.data.count || 0) / PAGINATION_COUNT) + 1
-
     if (isLoading) return <Loader />
-
-    const getDirectionGradient = (direction: TickerDirection) => {
-        switch (direction) {
-            case TickerDirection.LONG:
-                return {
-                    primary: 'rgba(34, 197, 94, 0.15)',
-                    secondary: 'rgba(16, 185, 129, 0.1)',
-                    accent: 'rgba(5, 150, 105, 0.2)'
-                }
-            case TickerDirection.SHORT:
-                return {
-                    primary: 'rgba(239, 68, 68, 0.15)',
-                    secondary: 'rgba(220, 38, 38, 0.1)',
-                    accent: 'rgba(185, 28, 28, 0.2)'
-                }
-            default:
-                return {
-                    primary: 'rgba(156, 163, 175, 0.15)',
-                    secondary: 'rgba(107, 114, 128, 0.1)',
-                    accent: 'rgba(75, 85, 99, 0.2)'
-                }
-        }
-    }
 
     const getDirectionIcon = (direction: TickerDirection) => {
         switch (direction) {
@@ -101,11 +76,6 @@ export const ResultsTickersList = () => {
     const formatPrice = (price: number | null) => {
         if (!price) return '-'
         return `$${price.toFixed(2)}`
-    }
-
-    const formatPercentage = (percent: number | null) => {
-        if (!percent) return '-'
-        return `${percent > 0 ? '+' : ''}${percent.toFixed(2)}%`
     }
 
     const getTimeframeLabel = (timeframe: TickerTimeFrame) => {
@@ -176,7 +146,7 @@ export const ResultsTickersList = () => {
                     </div>
                     <div className="flex flex-col gap-3">
                         <Label htmlFor="date-picker" className="px-1">
-                            Начало
+                            Начало закрытия
                         </Label>
                         <div className="flex flex-row gap-1">
                             <Popover open={openDate} onOpenChange={setOpenDate}>
@@ -206,7 +176,7 @@ export const ResultsTickersList = () => {
                     </div>
                     <div className="flex flex-col gap-3">
                         <Label htmlFor="date-picker" className="px-1">
-                            Конец
+                            Конец закрытия
                         </Label>
                         <div className="flex flex-row gap-1">
                             <Popover open={openDateMax} onOpenChange={setOpenDateMax}>
@@ -256,7 +226,7 @@ export const ResultsTickersList = () => {
                         <Label className="px-1">Закрыто</Label>
                         <Select value={isClosed} onValueChange={(e) => setIsClosed(e)}>
                             <SelectTrigger className="w-[150px]">
-                                <SelectValue placeholder="Сортировка завершения" />
+                                <SelectValue placeholder="Закрыто?" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value={'1'}>Да</SelectItem>
@@ -281,39 +251,39 @@ export const ResultsTickersList = () => {
                     )}
                 </div>
             </div>
-            <div className="overflow-x-auto rounded-lg border border-gray-800/50">
+            <div className="relative overflow-x-auto rounded-lg border border-gray-800/50">
                 <table className="w-full min-w-full divide-y divide-gray-800/50">
                     <thead className="bg-gray-900/50">
                         <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Тикер
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Направление
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                                Таймфрейм
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                                Цена открытия
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                                Текущая цена
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Прогноз
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                                Реальная цена
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                                Цена закрытия
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                                Разница
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                                Разница (нереализованная)
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                                PNL (unrealizedPnl)
+                            </th>
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Плечо
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                                Статус
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 SL/TP
+                            </th>
+                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                                Статус
                             </th>
                         </tr>
                     </thead>
@@ -326,26 +296,38 @@ export const ResultsTickersList = () => {
                             </tr>
                         )}
                         {resultsTicker?.data.data.map((el) => {
-                            const gradient = getDirectionGradient(el.direction)
-
                             return (
                                 <tr
                                     key={el.id}
-                                    className="group transition-all duration-300 hover:bg-gray-800/20"
-                                    style={{
-                                        background: `linear-gradient(135deg, 
-                                ${gradient.primary}15 0%, 
-                                ${gradient.secondary}15 50%, 
-                                ${gradient.accent}15 100%)`
-                                    }}
+                                    className={cn(
+                                        'bg-linear-to-r cursor-target group from-transparent via-gray-800/5 to-transparent transition-all duration-300 hover:from-gray-800/10 hover:via-gray-800/20 hover:to-gray-800/10',
+                                        el.isPredictAchieved
+                                            ? 'from-green-500/5 via-green-500/10 to-green-500/5 hover:from-green-500/10 hover:via-green-500/20 hover:to-green-500/10'
+                                            : 'from-red-500/5 via-red-500/10 to-red-500/5 hover:from-red-500/10 hover:via-red-500/20 hover:to-red-500/10'
+                                    )}
                                 >
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="flex items-center gap-2">
                                             <span className="text-muted-foreground text-sm">{el.model}</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold text-white">{el.ticker.name}</span>
+                                        <div className="flex flex-row items-center gap-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-bold text-white">{el.ticker.name}</span>
+                                                <span
+                                                    className={cn(
+                                                        'rounded-full border px-2 py-1 text-xs font-medium',
+                                                        el.direction === TickerDirection.LONG
+                                                            ? 'border-green-400/30 bg-green-400/10 text-green-400'
+                                                            : el.direction === TickerDirection.SHORT
+                                                              ? 'border-red-400/30 bg-red-400/10 text-red-400'
+                                                              : 'border-gray-400/30 bg-gray-400/10 text-gray-400'
+                                                    )}
+                                                >
+                                                    {getTimeframeLabel(el.timeframe)}
+                                                </span>
+                                            </div>
                                         </div>
+
                                         <div className="flex items-center gap-2">
                                             <span className="text-muted-foreground text-sm">
                                                 {dayjs(el.createdAt).format(DATE_TIME_DEFAULT_FORMAT)}
@@ -378,30 +360,13 @@ export const ResultsTickersList = () => {
                                     </td>
 
                                     <td className="whitespace-nowrap px-6 py-4">
-                                        <span
-                                            className={cn(
-                                                'rounded-full border px-2 py-1 text-xs font-medium',
-                                                el.direction === TickerDirection.LONG
-                                                    ? 'border-green-400/30 bg-green-400/10 text-green-400'
-                                                    : el.direction === TickerDirection.SHORT
-                                                      ? 'border-red-400/30 bg-red-400/10 text-red-400'
-                                                      : 'border-gray-400/30 bg-gray-400/10 text-gray-400'
-                                            )}
-                                        >
-                                            {getTimeframeLabel(el.timeframe)}
-                                        </span>
-                                    </td>
-
-                                    <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
-                                            <p className="text-muted-foreground text-xs">Текущая</p>
                                             <p className="font-medium text-white">{formatPrice(el.currentPrice)}</p>
                                         </div>
                                     </td>
 
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
-                                            <p className="text-muted-foreground text-xs">Прогноз</p>
                                             <p className="font-medium text-blue-300">
                                                 {formatPrice(el.predictedPrice)}
                                             </p>
@@ -409,48 +374,29 @@ export const ResultsTickersList = () => {
                                     </td>
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
-                                            <p className="text-muted-foreground text-xs">Реальная</p>
                                             <p className="font-medium text-purple-300">{formatPrice(el.realPrice)}</p>
                                         </div>
                                     </td>
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
-                                            <p className="text-muted-foreground text-xs">Разница</p>
-                                            <p
-                                                className={cn(
-                                                    'font-medium',
-                                                    el.percentDifference && el.percentDifference > 0
-                                                        ? 'text-green-400'
-                                                        : el.percentDifference && el.percentDifference < 0
-                                                          ? 'text-red-400'
-                                                          : 'text-gray-400'
-                                                )}
-                                            >
-                                                {formatPercentage(el.percentDifference)}
-                                            </p>
+                                            <p>{el.difference}$</p>
+                                            <p className="text-muted-foreground text-sm">{el.unrealizedDifference}$</p>
                                         </div>
                                     </td>
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
-                                            <p className="text-muted-foreground text-xs">Плечо</p>
+                                            <p>{el.pnl}$</p>
+                                            <p className="text-muted-foreground text-sm">{el.unrealizedPnl}$</p>
+                                        </div>
+                                    </td>
+                                    <td className="whitespace-nowrap px-6 py-4">
+                                        <div className="space-y-1">
                                             <p className="text-sm text-white">
                                                 {el.leverage ? `${el.leverage}x` : '-'}
                                             </p>
                                         </div>
                                     </td>
-                                    <td className="whitespace-nowrap px-6 py-4">
-                                        <div className="space-y-1">
-                                            <p className="text-muted-foreground text-xs">Статус</p>
-                                            <p
-                                                className={cn(
-                                                    'text-sm font-medium',
-                                                    el.isClosed ? 'text-yellow-400' : 'text-green-400'
-                                                )}
-                                            >
-                                                {el.isClosed ? 'Завершён' : 'Активен'}
-                                            </p>
-                                        </div>
-                                    </td>
+
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="flex flex-col gap-1 text-xs">
                                             {el.stopLoss && (
@@ -472,6 +418,18 @@ export const ResultsTickersList = () => {
                                             {!el.stopLoss && !el.takeProfit && <span className="text-gray-500">-</span>}
                                         </div>
                                     </td>
+                                    <td className="whitespace-nowrap px-6 py-4">
+                                        <div className="space-y-1">
+                                            <p
+                                                className={cn(
+                                                    'text-sm font-medium',
+                                                    el.isClosed ? 'text-yellow-400' : 'text-green-400'
+                                                )}
+                                            >
+                                                {el.isClosed ? 'Завершён' : 'Активен'}
+                                            </p>
+                                        </div>
+                                    </td>
                                 </tr>
                             )
                         })}
@@ -479,18 +437,16 @@ export const ResultsTickersList = () => {
                 </table>
             </div>
             <div className="flex flex-row gap-1">
-                {...Array.from({ length: countTickers }).map((_, index) => (
-                    <Button
-                        key={index}
-                        variant={page === index + 1 ? 'default' : 'outline'}
-                        onClick={() => setPage(index + 1)}
-                        className="h-10! w-10! cursor-target"
-                    >
-                        {index + 1}
-                    </Button>
-                ))}
+                <Pagination
+                    totalItems={resultsTicker?.data.count}
+                    page={page}
+                    count={count}
+                    handlePageChange={(e) => setPage(e)}
+                    handleItemsPerPageChange={(e) => setCount(Number(e))}
+                />
                 {isPending && <p>Загрузка...</p>}
             </div>
+            <p className="text-muted-foreground px-2 text-sm">Красным отображаются ряда, которые так и не закрылись</p>
         </div>
     )
 }

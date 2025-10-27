@@ -16,6 +16,10 @@ export interface ResultTicker {
     predictedPrice: number | null
     realPrice: number | null
     difference: number | null
+    unrealizedDifference: number | null
+    pnl: number | null
+    unrealizedPnl: number | null
+    isPredictAchieved: boolean
     leverageDifference: number | null
     percentDifference: number | null
     isClosed: boolean
