@@ -454,10 +454,7 @@ export const ResultsTickersList = () => {
                                 PNL (unrealizedPnl)
                             </th>
                             <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                                Плечо
-                            </th>
-                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                                SL/TP
+                                SL/TP/Плечо
                             </th>
                             <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Статус
@@ -566,13 +563,6 @@ export const ResultsTickersList = () => {
                                             <p className="text-muted-foreground text-sm">{el.unrealizedPnl}%</p>
                                         </div>
                                     </td>
-                                    <td className="whitespace-nowrap px-6 py-4">
-                                        <div className="space-y-1">
-                                            <p className="text-sm text-white">
-                                                {el.leverage ? `${el.leverage}x` : '-'}
-                                            </p>
-                                        </div>
-                                    </td>
 
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="flex flex-col gap-1 text-xs">
@@ -593,6 +583,12 @@ export const ResultsTickersList = () => {
                                                 </div>
                                             )}
                                             {!el.stopLoss && !el.takeProfit && <span className="text-gray-500">-</span>}
+                                            <div className="flex flex-row items-center gap-1">
+                                                <p className="text-muted-foreground">Плечо:</p>
+                                                <p className="text-sm text-white">
+                                                    {el.leverage ? `${el.leverage}x` : '-'}
+                                                </p>
+                                            </div>
                                         </div>
                                     </td>
                                     <td className="whitespace-nowrap px-6 py-4">
@@ -623,7 +619,12 @@ export const ResultsTickersList = () => {
                 />
                 {isPending && <p>Загрузка...</p>}
             </div>
-            <p className="text-muted-foreground px-2 text-sm">Красным отображаются ряда, которые так и не закрылись</p>
+            <p className="text-muted-foreground px-2 text-sm">
+                * Красным отображаются ряда, которые так и не закрылись
+            </p>
+            <p className="text-muted-foreground px-2 text-sm">
+                * SL/TP/Плечо не влияет на рассчеты, носит чисто информативный характер от ИИ
+            </p>
         </div>
     )
 }
