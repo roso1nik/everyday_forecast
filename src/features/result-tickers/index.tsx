@@ -41,6 +41,10 @@ export const ResultsTickersList = () => {
     const [model, setModel] = useState<TickerModels | undefined>(undefined)
 
     const [sortCreated, setSortCreated] = useState<SortOptions | undefined>(undefined)
+    const [sortPnl, setSortPnl] = useState<SortOptions | undefined>(undefined)
+    const [sortUnrealizedPnl, setSortUnrealizedPnl] = useState<SortOptions | undefined>(undefined)
+    const [sortIsClosed, setSortIsClosed] = useState<SortOptions | undefined>(undefined)
+    const [sortClosedAt, setSortClosedAt] = useState<SortOptions | undefined>(undefined)
 
     const {
         data: resultsTicker,
@@ -63,7 +67,11 @@ export const ResultsTickersList = () => {
             isClosed: isClosed === undefined ? undefined : Boolean(isClosed)
         },
         sorts: {
-            createdAt: sortCreated ? sortCreated : undefined
+            createdAt: sortCreated ? sortCreated : undefined,
+            pnl: sortPnl ? sortPnl : undefined,
+            unrealizedPnl: sortUnrealizedPnl ? sortUnrealizedPnl : undefined,
+            isClosed: sortIsClosed ? sortIsClosed : undefined,
+            closedAt: sortClosedAt ? sortClosedAt : undefined
         }
     })
 
@@ -313,49 +321,145 @@ export const ResultsTickersList = () => {
                         )}
                     </div>
                 </div>
-                <div className="flex flex-row gap-1">
-                    <Button onClick={() => setSortCreated((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}>
-                        {sortCreated === 'ASC' ? <SortDesc /> : <SortAsc />}
-                    </Button>
-                    {sortCreated !== undefined && (
-                        <Button variant={'destructive'} onClick={() => setSortCreated(undefined)}>
-                            <Trash />
-                        </Button>
-                    )}
+                <div className="flex w-full flex-row flex-wrap items-center gap-7">
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs text-gray-400">Создание</span>
+                        <div className="flex flex-row gap-1">
+                            <Button
+                                onClick={() => setSortCreated((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
+                                title="Сортировка по дате создания"
+                            >
+                                {sortCreated === 'ASC' ? <SortDesc /> : <SortAsc />}
+                            </Button>
+                            {sortCreated !== undefined && (
+                                <Button
+                                    variant={'destructive'}
+                                    onClick={() => setSortCreated(undefined)}
+                                    title="Сбросить сортировку по созданию"
+                                >
+                                    <Trash />
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs text-gray-400">PNL</span>
+                        <div className="flex flex-row gap-1">
+                            <Button
+                                onClick={() => setSortPnl((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
+                                title="Сортировка по PNL"
+                            >
+                                {sortPnl === 'ASC' ? <SortDesc /> : <SortAsc />}
+                            </Button>
+                            {sortPnl !== undefined && (
+                                <Button
+                                    variant={'destructive'}
+                                    onClick={() => setSortPnl(undefined)}
+                                    title="Сбросить сортировку по PNL"
+                                >
+                                    <Trash />
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs text-gray-400">Нереал. PNL</span>
+                        <div className="flex flex-row gap-1">
+                            <Button
+                                onClick={() => setSortUnrealizedPnl((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
+                                title="Сортировка по нереализованному PNL"
+                            >
+                                {sortUnrealizedPnl === 'ASC' ? <SortDesc /> : <SortAsc />}
+                            </Button>
+                            {sortUnrealizedPnl !== undefined && (
+                                <Button
+                                    variant={'destructive'}
+                                    onClick={() => setSortUnrealizedPnl(undefined)}
+                                    title="Сбросить сортировку по нереализованному PNL"
+                                >
+                                    <Trash />
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs text-gray-400">Статус</span>
+                        <div className="flex flex-row gap-1">
+                            <Button
+                                onClick={() => setSortIsClosed((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
+                                title="Сортировка по статусу закрытия"
+                            >
+                                {sortIsClosed === 'ASC' ? <SortDesc /> : <SortAsc />}
+                            </Button>
+                            {sortIsClosed !== undefined && (
+                                <Button
+                                    variant={'destructive'}
+                                    onClick={() => setSortIsClosed(undefined)}
+                                    title="Сбросить сортировку по статусу"
+                                >
+                                    <Trash />
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs text-gray-400">Закрытие</span>
+                        <div className="flex flex-row gap-1">
+                            <Button
+                                onClick={() => setSortClosedAt((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
+                                title="Сортировка по дате закрытия"
+                            >
+                                {sortClosedAt === 'ASC' ? <SortDesc /> : <SortAsc />}
+                            </Button>
+                            {sortClosedAt !== undefined && (
+                                <Button
+                                    variant={'destructive'}
+                                    onClick={() => setSortClosedAt(undefined)}
+                                    title="Сбросить сортировку по закрытию"
+                                >
+                                    <Trash />
+                                </Button>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className="relative overflow-x-auto rounded-lg border border-gray-800/50">
                 <table className="w-full min-w-full divide-y divide-gray-800/50">
                     <thead className="bg-gray-900/50">
                         <tr>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Тикер
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Направление
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Цена открытия
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Прогноз
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Цена закрытия
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Разница (нереализованная)
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 PNL (unrealizedPnl)
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Плечо
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 SL/TP
                             </th>
-                            <th className="z-1000 sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                            <th className="sticky top-0 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                                 Статус
                             </th>
                         </tr>
