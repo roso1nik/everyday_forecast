@@ -562,8 +562,8 @@ export const ResultsTickersList = () => {
                                     </td>
                                     <td className="whitespace-nowrap px-6 py-4">
                                         <div className="space-y-1">
-                                            <p>{el.pnl}$</p>
-                                            <p className="text-muted-foreground text-sm">{el.unrealizedPnl}$</p>
+                                            <p>{el.pnl}%</p>
+                                            <p className="text-muted-foreground text-sm">{el.unrealizedPnl}%</p>
                                         </div>
                                     </td>
                                     <td className="whitespace-nowrap px-6 py-4">
