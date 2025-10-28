@@ -22,9 +22,14 @@ export const Header = () => {
 
     return (
         <div className="border-primary/50 bg-background/50 flex w-full flex-col items-center justify-between gap-1 rounded-full border p-4 backdrop-blur lg:flex-row">
-            <div>
+            <div className="flex flex-row items-center gap-5">
                 <Link href={ROUTES.HOME_PAGE}>
                     <p className="cursor-target italic hover:underline">everyday_forecast</p>
+                </Link>
+                <Link href={ROUTES.SUMMARY_PAGE} className="w-full">
+                    <Button className="w-full" variant={'link'}>
+                        Отчеты
+                    </Button>
                 </Link>
             </div>
             <div className="flex flex-row items-center gap-3">

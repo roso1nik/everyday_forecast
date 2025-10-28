@@ -12,7 +12,8 @@ const font_flobal = Inter({
 
 export const metadata: Metadata = {
     title: 'Every day Forecast for crypto',
-    description: 'Every day forecast with AI'
+    description: 'Every day forecast with AI',
+    keywords: ['Прогноз валют', 'Forecast', 'crypto forecast', 'stocks forecast']
 }
 
 export default function RootLayout({

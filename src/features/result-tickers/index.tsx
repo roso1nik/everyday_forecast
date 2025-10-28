@@ -294,7 +294,7 @@ export const ResultsTickersList = () => {
                             <SelectContent>
                                 <SelectItem value={TickerModels.DEEPSEEKR1T}>DEEPSEEKR1T</SelectItem>
                                 <SelectItem value={TickerModels.GPT5}>GPT5</SelectItem>
-                                <SelectItem value={TickerModels.QWEN3}>QWEN3</SelectItem>
+                                <SelectItem value={TickerModels.QWEN3}>Llama4</SelectItem>
                             </SelectContent>
                         </Select>
                         {model && (

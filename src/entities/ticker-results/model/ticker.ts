@@ -43,5 +43,5 @@ export enum TickerTimeFrame {
 export enum TickerModels {
     GPT5 = 'Gpt5',
     DEEPSEEKR1T = 'DeepseekR1T',
-    QWEN3 = 'Qwen3'
+    QWEN3 = 'Llama4'
 }
