@@ -10,11 +10,11 @@ interface SummaryFilters {
         model: TickerModels
         timeframe: TickerTimeFrame
         closedAt: {
-            min: string
-            max: string
+            min: string | undefined
+            max: string | undefined
         }
     }>
-    groupBy: SummaryGroupBy[]
+    groupBy?: SummaryGroupBy[]
 }
 
 export type SummaryGroupBy = 'tickersId' | 'timeframe' | 'model'
@@ -46,7 +46,7 @@ interface SummaryResponse {
     }
 }
 
-const summary = async (data: SummaryFilters): AxiosPromise<SummaryResponse> => {
+const summary = async (data: SummaryFilters): AxiosPromise<SummaryResponse[]> => {
     const res = await apiClient.post('/statistics/generate', data)
 
     return res

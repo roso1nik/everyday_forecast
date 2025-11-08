@@ -1,5 +1,4 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 'use client'
 
 import { Loader } from '@/components/loader'

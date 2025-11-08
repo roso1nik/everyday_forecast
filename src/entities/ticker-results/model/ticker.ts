@@ -37,7 +37,7 @@ export enum TickerDirection {
 
 export enum TickerTimeFrame {
     OneDay = 'OneDay',
-    OneWeek = 'OneWeek '
+    OneWeek = 'OneWeek'
 }
 
 export enum TickerModels {
